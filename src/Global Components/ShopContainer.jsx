@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ShopContainer = () => {
+  
   return (
     <div className="h-[1024px] w-[1338px] bg-red-500 flex flex-wrap">
        <div

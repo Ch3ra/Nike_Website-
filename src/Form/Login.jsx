@@ -1,7 +1,44 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LoginForm = () => {
+  // ya daki xaii Login interaction
+const [data,setData]= useState({
+  email:'',
+  password:''
+
+})
+
+const handleChange=(e)=>{
+  const {name,value}= e.target;
+
+  setData({
+    ...data,
+    [name]:value
+  })
+}
+console.log(data)
+const nav= useNavigate()
+const handleSubmit=async(e)=>{
+  e.preventDefault()
+  console.log("Submission Triggered!")
+
+ const res= await axios.post('https://ecommerce-backend-88p8.onrender.com/auth/login',data)
+  if(res.status===200 & res.data.user.role==='user'){
+    localStorage.setItem('token', res.data.token)
+    nav('/')
+  }else if(res.status===200 & res.data.user.role==='admin'){
+    localStorage.setItem('token', res.data.token)
+
+    nav('/dash')
+  }
+  else{
+    alert('Something went wrong!')
+  }
+}
+
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [country, setCountry] = useState('Nepal');
   const countries = ['Nepal', 'India', 'USA', 'Canada', 'Australia']; // Add more countries as needed
@@ -54,7 +91,7 @@ const LoginForm = () => {
             </div>
           )}
         </div>
-        <form className="mt-8 space-y-6 ml-3">
+        <form className="mt-8 space-y-6 ml-3" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm">
             <div className="mb-4">
               <label htmlFor="email" className="sr-only">Email address</label>
@@ -64,6 +101,7 @@ const LoginForm = () => {
                 required
                 className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-gray-500 focus:border-gray-500 focus:z-10 sm:text-sm"
                 placeholder="Email*"
+                onChange={handleChange}
               />
             </div>
             <div className="mb-4">
@@ -74,6 +112,7 @@ const LoginForm = () => {
                 required
                 className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-gray-500 focus:border-gray-500 focus:z-10 sm:text-sm"
                 placeholder="Password*"
+                onChange={handleChange}
               />
             </div>
           </div>
